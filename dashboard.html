@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Feelink</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-links i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Recent Activity */
+        .activity-section, .quick-actions {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-card:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><i class="fas fa-handshake"></i> Feelink</h2>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="gigs.html"><i class="fas fa-briefcase"></i> My Gigs</a></li>
+                <li><a href="browse.html"><i class="fas fa-search"></i> Browse</a></li>
+                <li><a href="messages.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <div id="userName">Loading...</div>
+                        <div id="userRole" style="color: var(--secondary); font-size: 0.9rem;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card fade-in">
+                    <div class="stat-value" id="totalEarnings">$0</div>
+                    <div class="stat-label">Total Earnings</div>
+                </div>
+                <div class="stat-card success fade-in">
+                    <div class="stat-value" id="completedOrders">0</div>
+                    <div class="stat-label">Completed Orders</div>
+                </div>
+                <div class="stat-card warning fade-in">
+                    <div class="stat-value" id="activeOrders">0</div>
+                    <div class="stat-label">Active Orders</div>
+                </div>
+                <div class="stat-card danger fade-in">
+                    <div class="stat-value" id="pendingOrders">0</div>
+                    <div class="stat-label">Pending Orders</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions fade-in">
+                <h2>Quick Actions</h2>
+                <div class="quick-actions-grid">
+                    <div class="action-card" onclick="location.href='gigs.html'">
+                        <div class="action-icon"><i class="fas fa-plus-circle"></i></div>
+                        <div>Create New Gig</div>
+                    </div>
+                    <div class="action-card" onclick="location.href='browse.html'">
+                        <div class="action-icon"><i class="fas fa-search"></i></div>
+                        <div>Browse Services</div>
+                    </div>
+                    <div class="action-card" onclick="location.href='messages.html'">
+                        <div class="action-icon"><i class="fas fa-comments"></i></div>
+                        <div>Check Messages</div>
+                    </div>
+                    <div class="action-card" onclick="location.href='profile.html'">
+                        <div class="action-icon"><i class="fas fa-edit"></i></div>
+                        <div>Edit Profile</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section fade-in">
+                <h2>Recent Activity</h2>
+                <div id="recentActivity">
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fas fa-user-clock"></i></div>
+                        <div>
+                            <div>Welcome to Feelink!</div>
+                            <small style="color: var(--secondary);">Just now</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3k5f8G-Oim1ObJMTEVksebGTXZWI9ANM",
+            authDomain: "freelink-1321c.firebaseapp.com",
+            projectId: "freelink-1321c",
+            storageBucket: "freelink-1321c.firebasestorage.app",
+            messagingSenderId: "940850990523",
+            appId: "1:940850990523:web:6ba54bcf5b759bb374089e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Check authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Load user data
+            await loadUserData(user.uid);
+            await loadUserStats(user.uid);
+            await loadRecentActivity(user.uid);
+        });
+
+        // Load user data
+        async function loadUserData(uid) {
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    
+                    // Update UI with user data
+                    document.getElementById('userName').textContent = userData.fullName || 'User';
+                    document.getElementById('userRole').textContent = `Role: ${userData.role || 'Not set'}`;
+                    
+                    // Set avatar initial
+                    const avatar = document.getElementById('userAvatar');
+                    avatar.textContent = userData.fullName ? userData.fullName.charAt(0).toUpperCase() : 'U';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Load user statistics
+        async function loadUserStats(uid) {
+            try {
+                // Get user orders from orders collection
+                const ordersQuery = query(
+                    collection(db, "orders"), 
+                    where("freelancerId", "==", uid),
+                    orderBy("createdAt", "desc")
+                );
+                const ordersSnapshot = await getDocs(ordersQuery);
+                
+                let totalEarnings = 0;
+                let completedOrders = 0;
+                let activeOrders = 0;
+                let pendingOrders = 0;
+
+                ordersSnapshot.forEach(doc => {
+                    const order = doc.data();
+                    if (order.status === 'completed') {
+                        completedOrders++;
+                        totalEarnings += order.freelancerEarnings || 0;
+                    } else if (order.status === 'in-progress') {
+                        activeOrders++;
+                    } else if (order.status === 'pending') {
+                        pendingOrders++;
+                    }
+                });
+
+                // Update UI
+                document.getElementById('totalEarnings').textContent = `$${totalEarnings}`;
+                document.getElementById('completedOrders').textContent = completedOrders;
+                document.getElementById('activeOrders').textContent = activeOrders;
+                document.getElementById('pendingOrders').textContent = pendingOrders;
+
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+
+        // Load recent activity
+        async function loadRecentActivity(uid) {
+            try {
+                const activityContainer = document.getElementById('recentActivity');
+                
+                // Get recent orders
+                const ordersQuery = query(
+                    collection(db, "orders"),
+                    where("freelancerId", "==", uid),
+                    orderBy("createdAt", "desc"),
+                    limit(5)
+                );
+                
+                const ordersSnapshot = await getDocs(ordersQuery);
+                
+                ordersSnapshot.forEach(doc => {
+                    const order = doc.data();
+                    const activityItem = document.createElement('div');
+                    activityItem.className = 'activity-item';
+                    activityItem.innerHTML = `
+                        <div class="activity-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div>
+                            <div>New order: ${order.gigTitle}</div>
+                            <small style="color: var(--secondary);">${order.createdAt?.toDate().toLocaleDateString()}</small>
+                        </div>
+                    `;
+                    activityContainer.appendChild(activityItem);
+                });
+
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+
+        // Add animation to elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
