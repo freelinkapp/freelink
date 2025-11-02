@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Feelink</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 3rem 2rem;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-role {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-content {
+            padding: 2rem;
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control:disabled {
+            background: #f8fafc;
+            color: var(--secondary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-tag {
+            background: #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .skill-tag .remove-skill {
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .skill-tag .remove-skill:hover {
+            opacity: 1;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            aspect-ratio: 1;
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover {
+            border-color: var(--primary);
+        }
+
+        .portfolio-item.add-new {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+
+        .remove-portfolio {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: #dbeafe;
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: var(--success);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><i class="fas fa-handshake"></i> Feelink</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="gigs.html"><i class="fas fa-briefcase"></i> My Gigs</a></li>
+                <li><a href="browse.html"><i class="fas fa-search"></i> Browse</a></li>
+                <li><a href="messages.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Profile Settings</h1>
+                <div class="user-info">
+                    <span>Manage your account and preferences</span>
+                </div>
+            </div>
+
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <div class="profile-name" id="profileName">Loading...</div>
+                    <div class="profile-role" id="profileRole">
+                        <span class="role-badge" id="roleBadge">
+                            <i class="fas fa-user"></i> <span id="roleText">Loading...</span>
+                        </span>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-value" id="statOrders">0</div>
+                            <div class="stat-label">Total Orders</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="statEarnings">$0</div>
+                            <div class="stat-label">Total Earnings</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="statRating">0.0</div>
+                            <div class="stat-label">Average Rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <div class="profile-tabs">
+                        <button class="tab active" onclick="switchTab('basic')">Basic Info</button>
+                        <button class="tab" onclick="switchTab('professional')">Professional</button>
+                        <button class="tab" onclick="switchTab('portfolio')">Portfolio</button>
+                        <button class="tab" onclick="switchTab('security')">Security</button>
+                    </div>
+
+                    <!-- Basic Info Tab -->
+                    <div class="tab-content active" id="basicTab">
+                        <form id="basicInfoForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" class="form-control" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <input type="text" id="country" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bio">Bio</label>
+                                <textarea id="bio" class="form-control" rows="4" placeholder="Tell us about yourself..."></textarea>
+                            </div>
+                            <button type="submit" class="btn">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Professional Tab -->
+                    <div class="tab-content" id="professionalTab">
+                        <form id="professionalForm">
+                            <div class="form-group">
+                                <label>Your Role</label>
+                                <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="role" value="freelancer"> Freelancer
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="role" value="client"> Client
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="role" value="both"> Both
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="freelancerFields" style="display: none;">
+                                <h3 style="margin-bottom: 1rem;">Freelancer Profile</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="professionalTitle">Professional Title</label>
+                                        <input type="text" id="professionalTitle" class="form-control" placeholder="e.g., Senior Web Developer">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hourlyRate">Hourly Rate ($)</label>
+                                        <input type="number" id="hourlyRate" class="form-control" min="10" step="5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="category">Primary Category</label>
+                                        <select id="category" class="form-control">
+                                            <option value="">Select a category</option>
+                                            <option value="Web Development">Web Development</option>
+                                            <option value="Mobile Development">Mobile Development</option>
+                                            <option value="Graphic Design">Graphic Design</option>
+                                            <option value="Content Writing">Content Writing</option>
+                                            <option value="Digital Marketing">Digital Marketing</option>
+                                            <option value="Video Editing">Video Editing</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="professionalDescription">Professional Description</label>
+                                    <textarea id="professionalDescription" class="form-control" rows="4" placeholder="Describe your professional experience and skills..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Skills</label>
+                                    <div class="skills-container" id="skillsContainer">
+                                        <!-- Skills will be added here -->
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <input type="text" id="newSkill" class="form-control" placeholder="Add a skill" style="flex: 1;">
+                                        <button type="button" class="btn btn-outline" onclick="addSkill()">
+                                            <i class="fas fa-plus"></i> Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="clientFields" style="display: none;">
+                                <h3 style="margin-bottom: 1rem;">Client Profile</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="company">Company</label>
+                                        <input type="text" id="company" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="position">Position</label>
+                                        <input type="text" id="position" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn">
+                                <i class="fas fa-save"></i> Save Professional Info
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Portfolio Tab -->
+                    <div class="tab-content" id="portfolioTab">
+                        <h3 style="margin-bottom: 1rem;">Portfolio Items</h3>
+                        <p style="color: var(--secondary); margin-bottom: 1.5rem;">Showcase your best work to attract more clients</p>
+                        
+                        <div class="portfolio-grid" id="portfolioGrid">
+                            <div class="portfolio-item add-new" onclick="addPortfolioItem()">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2rem;">
+                            <button class="btn" onclick="savePortfolio()">
+                                <i class="fas fa-save"></i> Save Portfolio
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div class="tab-content" id="securityTab">
+                        <form id="securityForm">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" class="form-control" minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-control">
+                            </div>
+                            <button type="submit" class="btn">
+                                <i class="fas fa-lock"></i> Update Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3k5f8G-Oim1ObJMTEVksebGTXZWI9ANM",
+            authDomain: "freelink-1321c.firebaseapp.com",
+            projectId: "freelink-1321c",
+            storageBucket: "freelink-1321c.firebasestorage.app",
+            messagingSenderId: "940850990523",
+            appId: "1:940850990523:web:6ba54bcf5b759bb374089e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userData = null;
+        let skills = [];
+        let portfolioItems = [];
+
+        // Check authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            await loadUserProfile();
+        });
+
+        // Load user profile data
+        async function loadUserProfile() {
+            try {
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (userDoc.exists()) {
+                    userData = userDoc.data();
+                    displayUserProfile(userData);
+                    await loadUserStats();
+                }
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                showError('Error loading profile data');
+            }
+        }
+
+        // Display user profile
+        function displayUserProfile(data) {
+            // Basic info
+            document.getElementById('profileAvatar').textContent = data.fullName ? data.fullName.charAt(0).toUpperCase() : 'U';
+            document.getElementById('profileName').textContent = data.fullName || 'User';
+            document.getElementById('roleText').textContent = data.role || 'Not set';
+            document.getElementById('roleBadge').className = `role-badge ${getRoleBadgeClass(data.role)}`;
+
+            // Form fields
+            document.getElementById('fullName').value = data.fullName || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('country').value = data.country || '';
+            document.getElementById('bio').value = data.bio || '';
+
+            // Professional info
+            const roleRadio = document.querySelector(`input[name="role"][value="${data.role}"]`);
+            if (roleRadio) roleRadio.checked = true;
+            updateRoleFields(data.role);
+
+            // Freelancer fields
+            if (data.freelancerProfile) {
+                document.getElementById('professionalTitle').value = data.freelancerProfile.title || '';
+                document.getElementById('hourlyRate').value = data.freelancerProfile.hourlyRate || '';
+                document.getElementById('category').value = data.freelancerProfile.category || '';
+                document.getElementById('professionalDescription').value = data.freelancerProfile.description || '';
+                skills = data.skills || [];
+                updateSkillsDisplay();
+            }
+
+            // Client fields
+            if (data.clientProfile) {
+                document.getElementById('company').value = data.clientProfile.company || '';
+                document.getElementById('position').value = data.clientProfile.position || '';
+            }
+
+            // Portfolio
+            portfolioItems = data.freelancerProfile?.portfolio || [];
+            updatePortfolioDisplay();
+        }
+
+        // Load user statistics
+        async function loadUserStats() {
+            try {
+                // Get orders count and earnings
+                const ordersQuery = query(
+                    collection(db, "orders"),
+                    where("freelancerId", "==", currentUser.uid),
+                    where("status", "==", "completed")
+                );
+                const ordersSnapshot = await getDocs(ordersQuery);
+                
+                let totalEarnings = 0;
+                ordersSnapshot.forEach(doc => {
+                    const order = doc.data();
+                    totalEarnings += order.freelancerEarnings || 0;
+                });
+
+                // Get reviews for average rating
+                const reviewsQuery = query(
+                    collection(db, "reviews"),
+                    where("revieweeId", "==", currentUser.uid)
+                );
+                const reviewsSnapshot = await getDocs(reviewsQuery);
+                
+                let totalRating = 0;
+                reviewsSnapshot.forEach(doc => {
+                    totalRating += doc.data().rating;
+                });
+                const averageRating = reviewsSnapshot.size > 0 ? (totalRating / reviewsSnapshot.size).toFixed(1) : '0.0';
+
+                // Update UI
+                document.getElementById('statOrders').textContent = ordersSnapshot.size;
+                document.getElementById('statEarnings').textContent = `$${totalEarnings}`;
+                document.getElementById('statRating').textContent = averageRating;
+
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+
+        // Get role badge class
+        function getRoleBadgeClass(role) {
+            const classes = {
+                'freelancer': 'role-badge',
+                'client': 'role-badge',
+                'both': 'role-badge'
+            };
+            return classes[role] || 'role-badge';
+        }
+
+        // Update role-specific fields visibility
+        function updateRoleFields(role) {
+            const freelancerFields = document.getElementById('freelancerFields');
+            const clientFields = document.getElementById('clientFields');
+
+            freelancerFields.style.display = (role === 'freelancer' || role === 'both') ? 'block' : 'none';
+            clientFields.style.display = (role === 'client' || role === 'both') ? 'block' : 'none';
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Add skill
+        function addSkill() {
+            const newSkillInput = document.getElementById('newSkill');
+            const skill = newSkillInput.value.trim();
+            
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                updateSkillsDisplay();
+                newSkillInput.value = '';
+            }
+        }
+
+        // Remove skill
+        function removeSkill(index) {
+            skills.splice(index, 1);
+            updateSkillsDisplay();
+        }
+
+        // Update skills display
+        function updateSkillsDisplay() {
+            const skillsContainer = document.getElementById('skillsContainer');
+            skillsContainer.innerHTML = skills.map((skill, index) => `
+                <div class="skill-tag">
+                    ${skill}
+                    <span class="remove-skill" onclick="removeSkill(${index})">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Add portfolio item
+        function addPortfolioItem() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        portfolioItems.push(e.target.result);
+                        updatePortfolioDisplay();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Remove portfolio item
+        function removePortfolioItem(index) {
+            portfolioItems.splice(index, 1);
+            updatePortfolioDisplay();
+        }
+
+        // Update portfolio display
+        function updatePortfolioDisplay() {
+            const portfolioGrid = document.getElementById('portfolioGrid');
+            portfolioGrid.innerHTML = `
+                <div class="portfolio-item add-new" onclick="addPortfolioItem()">
+                    <i class="fas fa-plus"></i>
+                </div>
+            `;
+
+            portfolioItems.forEach((item, index) => {
+                const portfolioItem = document.createElement('div');
+                portfolioItem.className = 'portfolio-item';
+                portfolioItem.innerHTML = `
+                    <img src="${item}" alt="Portfolio item">
+                    <button class="remove-portfolio" onclick="removePortfolioItem(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                portfolioGrid.appendChild(portfolioItem);
+            });
+        }
+
+        // Save portfolio
+        async function savePortfolio() {
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    'freelancerProfile.portfolio': portfolioItems
+                });
+                showSuccess('Portfolio updated successfully!');
+            } catch (error) {
+                console.error('Error saving portfolio:', error);
+                showError('Error saving portfolio');
+            }
+        }
+
+        // Form submissions
+        document.getElementById('basicInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    fullName: document.getElementById('fullName').value,
+                    phone: document.getElementById('phone').value,
+                    country: document.getElementById('country').value,
+                    bio: document.getElementById('bio').value
+                });
+
+                showSuccess('Profile updated successfully!');
+                await loadUserProfile(); // Reload to show changes
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError('Error updating profile');
+            }
+        });
+
+        document.getElementById('professionalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const role = document.querySelector('input[name="role"]:checked')?.value;
+            if (!role) {
+                showError('Please select a role');
+                return;
+            }
+
+            try {
+                const updateData = {
+                    role: role,
+                    skills: skills
+                };
+
+                if (role === 'freelancer' || role === 'both') {
+                    updateData.freelancerProfile = {
+                        title: document.getElementById('professionalTitle').value,
+                        hourlyRate: parseInt(document.getElementById('hourlyRate').value) || 0,
+                        category: document.getElementById('category').value,
+                        description: document.getElementById('professionalDescription').value,
+                        isProfileComplete: true
+                    };
+                }
+
+                if (role === 'client' || role === 'both') {
+                    updateData.clientProfile = {
+                        company: document.getElementById('company').value,
+                        position: document.getElementById('position').value,
+                        isProfileComplete: true
+                    };
+                }
+
+                await updateDoc(doc(db, "users", currentUser.uid), updateData);
+                showSuccess('Professional information updated successfully!');
+                await loadUserProfile();
+            } catch (error) {
+                console.error('Error updating professional info:', error);
+                showError('Error updating professional information');
+            }
+        });
+
+        document.getElementById('securityForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showError('New passwords do not match');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
+            }
+
+            try {
+                // Reauthenticate user
+                const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+                await reauthenticateWithCredential(currentUser, credential);
+                
+                // Update password
+                await updatePassword(currentUser, newPassword);
+                
+                showSuccess('Password updated successfully!');
+                document.getElementById('securityForm').reset();
+            } catch (error) {
+                console.error('Error updating password:', error);
+                if (error.code === 'auth/wrong-password') {
+                    showError('Current password is incorrect');
+                } else {
+                    showError('Error updating password');
+                }
+            }
+        });
+
+        // Role radio button change
+        document.querySelectorAll('input[name="role"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                updateRoleFields(e.target.value);
+            });
+        });
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
