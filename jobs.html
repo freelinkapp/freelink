@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Posts - Feelink</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        .jobs-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .jobs-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .job-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .job-client {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .job-budget {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .job-description {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: var(--radius);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .job-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-tag {
+            background: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--secondary);
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .proposals-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .proposal-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .proposal-freelancer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .proposal-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .proposal-description {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .proposal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><i class="fas fa-handshake"></i> Feelink</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="gigs.html"><i class="fas fa-briefcase"></i> My Gigs</a></li>
+                <li><a href="jobs.html" class="active"><i class="fas fa-tasks"></i> Job Posts</a></li>
+                <li><a href="browse.html"><i class="fas fa-search"></i> Browse</a></li>
+                <li><a href="messages.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Job Posts</h1>
+                <button class="btn" onclick="openCreateJobModal()">
+                    <i class="fas fa-plus"></i> Post New Job
+                </button>
+            </div>
+
+            <div class="jobs-tabs">
+                <button class="tab active" onclick="filterJobs('all')">All Jobs</button>
+                <button class="tab" onclick="filterJobs('open')">Open</button>
+                <button class="tab" onclick="filterJobs('in-progress')">In Progress</button>
+                <button class="tab" onclick="filterJobs('completed')">Completed</button>
+                <button class="tab" onclick="filterJobs('my-proposals')">My Proposals</button>
+            </div>
+
+            <div class="jobs-grid" id="jobsContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading jobs...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Job Modal -->
+    <div class="modal" id="createJobModal">
+        <div class="modal-content">
+            <h2>Post New Job</h2>
+            <form id="createJobForm">
+                <div class="form-group">
+                    <label for="jobTitle">Job Title</label>
+                    <input type="text" id="jobTitle" class="form-control" placeholder="e.g., Need a website for my business" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobDescription">Job Description</label>
+                    <textarea id="jobDescription" class="form-control" rows="6" placeholder="Describe your project in detail..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobCategory">Category</label>
+                    <select id="jobCategory" class="form-control" required>
+                        <option value="">Select a category</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Mobile Development">Mobile Development</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Content Writing">Content Writing</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                        <option value="Video Editing">Video Editing</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobBudget">Budget ($)</label>
+                    <input type="number" id="jobBudget" class="form-control" min="50" step="50" placeholder="500" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobDeadline">Deadline (days)</label>
+                    <input type="number" id="jobDeadline" class="form-control" min="1" max="90" placeholder="14" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobSkills">Required Skills (comma separated)</label>
+                    <input type="text" id="jobSkills" class="form-control" placeholder="HTML, CSS, JavaScript, React">
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn" id="createJobBtn">
+                        <i class="fas fa-paper-plane"></i> Post Job
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="closeCreateJobModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div class="modal" id="jobDetailsModal">
+        <div class="modal-content">
+            <h2 id="jobDetailsTitle">Job Details</h2>
+            <div id="jobDetailsContent">
+                <!-- Job details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Proposal Modal -->
+    <div class="modal" id="proposalModal">
+        <div class="modal-content">
+            <h2>Submit Proposal</h2>
+            <form id="proposalForm">
+                <div class="form-group">
+                    <label for="proposalAmount">Your Proposed Amount ($)</label>
+                    <input type="number" id="proposalAmount" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="proposalDescription">Proposal Description</label>
+                    <textarea id="proposalDescription" class="form-control" rows="6" placeholder="Why are you the best fit for this job? Describe your approach..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="proposalTimeline">Estimated Timeline (days)</label>
+                    <input type="number" id="proposalTimeline" class="form-control" min="1" max="90" required>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn" id="submitProposalBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Proposal
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="closeProposalModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3k5f8G-Oim1ObJMTEVksebGTXZWI9ANM",
+            authDomain: "freelink-1321c.firebaseapp.com",
+            projectId: "freelink-1321c",
+            storageBucket: "freelink-1321c.firebasestorage.app",
+            messagingSenderId: "940850990523",
+            appId: "1:940850990523:web:6ba54bcf5b759bb374089e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let currentFilter = 'all';
+        let selectedJobId = null;
+        let unsubscribeJobs = null;
+
+        // Check authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            await loadJobs();
+        });
+
+        // Load jobs from Firestore
+        async function loadJobs() {
+            // Unsubscribe from previous listener
+            if (unsubscribeJobs) {
+                unsubscribeJobs();
+            }
+
+            try {
+                let jobsQuery;
+                
+                if (currentFilter === 'my-proposals') {
+                    // Get jobs where current user has submitted proposals
+                    const proposalsQuery = query(
+                        collection(db, "proposals"),
+                        where("freelancerId", "==", currentUser.uid)
+                    );
+                    const proposalsSnapshot = await getDocs(proposalsQuery);
+                    const jobIds = proposalsSnapshot.docs.map(doc => doc.data().jobId);
+                    
+                    if (jobIds.length === 0) {
+                        document.getElementById('jobsContainer').innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt"></i>
+                                <h3>No Proposals Yet</h3>
+                                <p>You haven't submitted any proposals yet</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    jobsQuery = query(
+                        collection(db, "jobPosts"),
+                        where("__name__", "in", jobIds),
+                        orderBy("createdAt", "desc")
+                    );
+                } else if (currentFilter === 'all') {
+                    jobsQuery = query(
+                        collection(db, "jobPosts"),
+                        orderBy("createdAt", "desc")
+                    );
+                } else {
+                    jobsQuery = query(
+                        collection(db, "jobPosts"),
+                        where("status", "==", currentFilter),
+                        orderBy("createdAt", "desc")
+                    );
+                }
+
+                unsubscribeJobs = onSnapshot(jobsQuery, async (snapshot) => {
+                    const jobsContainer = document.getElementById('jobsContainer');
+                    
+                    if (snapshot.empty) {
+                        jobsContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-briefcase"></i>
+                                <h3>No Jobs Found</h3>
+                                <p>${getEmptyStateMessage(currentFilter)}</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    jobsContainer.innerHTML = '';
+                    
+                    for (const doc of snapshot.docs) {
+                        const job = doc.data();
+                        await displayJobCard(job, doc.id);
+                    }
+
+                }, (error) => {
+                    console.error('Error loading jobs:', error);
+                    document.getElementById('jobsContainer').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Error Loading Jobs</h3>
+                            <p>Please try again later</p>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                console.error('Error setting up jobs listener:', error);
+            }
+        }
+
+        // Get empty state message based on filter
+        function getEmptyStateMessage(filter) {
+            const messages = {
+                'all': 'No jobs have been posted yet',
+                'open': 'No open jobs available',
+                'in-progress': 'No jobs in progress',
+                'completed': 'No completed jobs',
+                'my-proposals': 'You haven\'t submitted any proposals'
+            };
+            return messages[filter] || 'No jobs found';
+        }
+
+        // Display job card
+        async function displayJobCard(job, jobId) {
+            const jobsContainer = document.getElementById('jobsContainer');
+            const jobCard = document.createElement('div');
+            jobCard.className = 'job-card';
+            
+            // Get client info
+            const clientDoc = await getDoc(doc(db, "users", job.clientId));
+            const clientData = clientDoc.data();
+            
+            // Check if user has already submitted a proposal
+            const proposalQuery = query(
+                collection(db, "proposals"),
+                where("jobId", "==", jobId),
+                where("freelancerId", "==", currentUser.uid)
+            );
+            const proposalSnapshot = await getDocs(proposalQuery);
+            const hasProposed = !proposalSnapshot.empty;
+            
+            // Get proposals count
+            const proposalsQuery = query(
+                collection(db, "proposals"),
+                where("jobId", "==", jobId)
+            );
+            const proposalsSnapshot = await getDocs(proposalsQuery);
+
+            jobCard.innerHTML = `
+                <div class="job-header">
+                    <div class="job-info">
+                        <h3>${job.title}</h3>
+                        <div class="job-client">
+                            <i class="fas fa-user"></i> ${clientData.fullName}
+                        </div>
+                    </div>
+                    <div class="job-budget">$${job.budget}</div>
+                </div>
+
+                <div class="job-description">${job.description}</div>
+
+                <div class="job-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value">${job.category}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Deadline</span>
+                        <span class="detail-value">${job.deadline} days</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value">${job.status}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Posted</span>
+                        <span class="detail-value">${job.createdAt?.toDate().toLocaleDateString()}</span>
+                    </div>
+                </div>
+
+                ${job.skillsRequired && job.skillsRequired.length > 0 ? `
+                    <div class="job-skills">
+                        ${job.skillsRequired.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                ` : ''}
+
+                <div class="job-actions">
+                    <div class="proposals-count">
+                        <i class="fas fa-users"></i> ${proposalsSnapshot.size} proposals
+                    </div>
+                    ${getJobActions(job, jobId, hasProposed, job.clientId === currentUser.uid)}
+                </div>
+            `;
+            
+            jobsContainer.appendChild(jobCard);
+        }
+
+        // Get appropriate actions for job
+        function getJobActions(job, jobId, hasProposed, isOwner) {
+            if (isOwner) {
+                // Job owner actions
+                return `
+                    <button class="btn btn-success" onclick="viewJobProposals('${jobId}')">
+                        <i class="fas fa-eye"></i> View Proposals (${job.proposals?.length || 0})
+                    </button>
+                    <button class="btn" onclick="viewJobDetails('${jobId}')">
+                        <i class="fas fa-info-circle"></i> Details
+                    </button>
+                `;
+            } else {
+                // Freelancer actions
+                if (hasProposed) {
+                    return `
+                        <button class="btn btn-success" disabled>
+                            <i class="fas fa-check"></i> Proposal Sent
+                        </button>
+                        <button class="btn" onclick="viewJobDetails('${jobId}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    `;
+                } else if (job.status === 'open') {
+                    return `
+                        <button class="btn btn-primary" onclick="submitProposal('${jobId}')">
+                            <i class="fas fa-paper-plane"></i> Submit Proposal
+                        </button>
+                        <button class="btn" onclick="viewJobDetails('${jobId}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    `;
+                } else {
+                    return `
+                        <button class="btn" onclick="viewJobDetails('${jobId}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    `;
+                }
+            }
+        }
+
+        // Create new job
+        document.getElementById('createJobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const createBtn = document.getElementById('createJobBtn');
+            createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+            createBtn.disabled = true;
+
+            try {
+                // Get user data
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                const userData = userDoc.data();
+
+                // Create job post in Firestore
+                await addDoc(collection(db, "jobPosts"), {
+                    // Job Information
+                    title: document.getElementById('jobTitle').value,
+                    description: document.getElementById('jobDescription').value,
+                    budget: parseInt(document.getElementById('jobBudget').value),
+                    category: document.getElementById('jobCategory').value,
+                    deadline: parseInt(document.getElementById('jobDeadline').value),
+                    
+                    // Client Information
+                    clientId: currentUser.uid,
+                    clientName: userData.fullName,
+                    clientPhoto: userData.profilePhoto,
+                    
+                    // Job Details
+                    skillsRequired: document.getElementById('jobSkills').value.split(',').map(skill => skill.trim()).filter(skill => skill),
+                    attachments: [],
+                    proposals: [],
+                    
+                    // Status
+                    status: "open",
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+
+                closeCreateJobModal();
+                document.getElementById('createJobForm').reset();
+                showSuccess('Job posted successfully!');
+
+            } catch (error) {
+                console.error('Error creating job:', error);
+                alert('Error creating job post. Please try again.');
+            } finally {
+                createBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Job';
+                createBtn.disabled = false;
+            }
+        });
+
+        // Submit proposal
+        document.getElementById('proposalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!selectedJobId) return;
+
+            const submitBtn = document.getElementById('submitProposalBtn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            try {
+                // Get user data
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                const userData = userDoc.data();
+
+                // Get job data
+                const jobDoc = await getDoc(doc(db, "jobPosts", selectedJobId));
+                const jobData = jobDoc.data();
+
+                // Create proposal in Firestore
+                await addDoc(collection(db, "proposals"), {
+                    jobId: selectedJobId,
+                    jobTitle: jobData.title,
+                    freelancerId: currentUser.uid,
+                    freelancerName: userData.fullName,
+                    freelancerPhoto: userData.profilePhoto,
+                    amount: parseInt(document.getElementById('proposalAmount').value),
+                    description: document.getElementById('proposalDescription').value,
+                    timeline: parseInt(document.getElementById('proposalTimeline').value),
+                    status: "pending",
+                    createdAt: new Date()
+                });
+
+                // Create notification message
+                await addDoc(collection(db, "messages"), {
+                    chatId: [currentUser.uid, jobData.clientId].sort().join('_'),
+                    participants: [currentUser.uid, jobData.clientId],
+                    participantsNames: [userData.fullName, jobData.clientName],
+                    senderId: currentUser.uid,
+                    senderName: userData.fullName,
+                    message: `I've submitted a proposal for your job: "${jobData.title}"`,
+                    messageType: "proposal",
+                    jobId: selectedJobId,
+                    timestamp: new Date(),
+                    read: false,
+                    readBy: [currentUser.uid]
+                });
+
+                closeProposalModal();
+                document.getElementById('proposalForm').reset();
+                showSuccess('Proposal submitted successfully!');
+                await loadJobs(); // Reload to update UI
+
+            } catch (error) {
+                console.error('Error submitting proposal:', error);
+                alert('Error submitting proposal. Please try again.');
+            } finally {
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Proposal';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Filter jobs
+        function filterJobs(filter) {
+            currentFilter = filter;
+            
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Reload jobs with new filter
+            loadJobs();
+        }
+
+        // View job details
+        async function viewJobDetails(jobId) {
+            try {
+                const jobDoc = await getDoc(doc(db, "jobPosts", jobId));
+                const job = jobDoc.data();
+                const clientDoc = await getDoc(doc(db, "users", job.clientId));
+                const clientData = clientDoc.data();
+
+                document.getElementById('jobDetailsTitle').textContent = job.title;
+                document.getElementById('jobDetailsContent').innerHTML = `
+                    <div class="job-description" style="margin-bottom: 1.5rem;">${job.description}</div>
+                    
+                    <div class="job-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Client</span>
+                            <span class="detail-value">${clientData.fullName}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Budget</span>
+                            <span class="detail-value">$${job.budget}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Category</span>
+                            <span class="detail-value">${job.category}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Deadline</span>
+                            <span class="detail-value">${job.deadline} days</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">${job.status}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Posted</span>
+                            <span class="detail-value">${job.createdAt?.toDate().toLocaleDateString()}</span>
+                        </div>
+                    </div>
+
+                    ${job.skillsRequired && job.skillsRequired.length > 0 ? `
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong>Required Skills:</strong>
+                            <div class="job-skills" style="margin-top: 0.5rem;">
+                                ${job.skillsRequired.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                        <button class="btn btn-warning" onclick="closeJobDetailsModal()">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                `;
+
+                document.getElementById('jobDetailsModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading job details:', error);
+            }
+        }
+
+        // View job proposals (for job owner)
+        async function viewJobProposals(jobId) {
+            try {
+                const proposalsQuery = query(
+                    collection(db, "proposals"),
+                    where("jobId", "==", jobId),
+                    orderBy("createdAt", "desc")
+                );
+                const proposalsSnapshot = await getDocs(proposalsQuery);
+                
+                const jobDoc = await getDoc(doc(db, "jobPosts", jobId));
+                const job = jobDoc.data();
+
+                document.getElementById('jobDetailsTitle').textContent = `Proposals for: ${job.title}`;
+                
+                if (proposalsSnapshot.empty) {
+                    document.getElementById('jobDetailsContent').innerHTML = `
+                        <div class="empty-state" style="padding: 2rem;">
+                            <i class="fas fa-users"></i>
+                            <h3>No Proposals Yet</h3>
+                            <p>No one has submitted proposals for this job yet</p>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                            <button class="btn btn-warning" onclick="closeJobDetailsModal()">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    let proposalsHTML = '';
+                    
+                    for (const doc of proposalsSnapshot.docs) {
+                        const proposal = doc.data();
+                        const freelancerDoc = await getDoc(doc(db, "users", proposal.freelancerId));
+                        const freelancerData = freelancerDoc.data();
+                        
+                        proposalsHTML += `
+                            <div class="proposal-item">
+                                <div class="proposal-header">
+                                    <div class="proposal-freelancer">
+                                        <i class="fas fa-user"></i> ${proposal.freelancerName}
+                                        ${freelancerData.freelancerProfile?.title ? `- ${freelancerData.freelancerProfile.title}` : ''}
+                                    </div>
+                                    <div class="proposal-amount">$${proposal.amount}</div>
+                                </div>
+                                <div class="proposal-description">${proposal.description}</div>
+                                <div style="color: var(--secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-clock"></i> Estimated: ${proposal.timeline} days
+                                </div>
+                                <div class="proposal-actions">
+                                    <button class="btn btn-success" onclick="acceptProposal('${doc.id}', '${jobId}')">
+                                        <i class="fas fa-check"></i> Accept
+                                    </button>
+                                    <button class="btn" onclick="messageFreelancer('${proposal.freelancerId}', '${job.title}')">
+                                        <i class="fas fa-comments"></i> Message
+                                    </button>
+                                    <button class="btn" onclick="viewFreelancerProfile('${proposal.freelancerId}')">
+                                        <i class="fas fa-eye"></i> Profile
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById('jobDetailsContent').innerHTML = `
+                        ${proposalsHTML}
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                            <button class="btn btn-warning" onclick="closeJobDetailsModal()">
+                                <i class="fas fa-times"></i> Close
+                            </button>
+                        </div>
+                    `;
+                }
+
+                document.getElementById('jobDetailsModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading proposals:', error);
+            }
+        }
+
+        // Accept proposal and create order
+        async function acceptProposal(proposalId, jobId) {
+            try {
+                const proposalDoc = await getDoc(doc(db, "proposals", proposalId));
+                const proposal = proposalDoc.data();
+                const jobDoc = await getDoc(doc(db, "jobPosts", jobId));
+                const job = jobDoc.data();
+
+                // Create order from proposal
+                await addDoc(collection(db, "orders"), {
+                    orderId: 'ORD' + Date.now(),
+                    jobId: jobId,
+                    proposalId: proposalId,
+                    gigTitle: job.title,
+                    price: proposal.amount,
+                    platformFee: proposal.amount * 0.15,
+                    freelancerEarnings: proposal.amount * 0.85,
+                    
+                    clientId: job.clientId,
+                    clientName: job.clientName,
+                    freelancerId: proposal.freelancerId,
+                    freelancerName: proposal.freelancerName,
+                    
+                    requirements: job.description,
+                    deliveryDate: new Date(Date.now() + proposal.timeline * 24 * 60 * 60 * 1000),
+                    status: "pending",
+                    revisions: 3,
+                    
+                    createdAt: new Date(),
+                    paymentStatus: "pending"
+                });
+
+                // Update job status
+                await updateDoc(doc(db, "jobPosts", jobId), {
+                    status: 'in-progress',
+                    updatedAt: new Date()
+                });
+
+                // Update proposal status
+                await updateDoc(doc(db, "proposals", proposalId), {
+                    status: 'accepted'
+                });
+
+                // Create notification message
+                await addDoc(collection(db, "messages"), {
+                    chatId: [job.clientId, proposal.freelancerId].sort().join('_'),
+                    participants: [job.clientId, proposal.freelancerId],
+                    participantsNames: [job.clientName, proposal.freelancerName],
+                    senderId: job.clientId,
+                    senderName: job.clientName,
+                    message: `I've accepted your proposal for "${job.title}". Let's get started!`,
+                    messageType: "system",
+                    orderId: jobId,
+                    timestamp: new Date(),
+                    read: false,
+                    readBy: [job.clientId]
+                });
+
+                alert('Proposal accepted! Order created successfully.');
+                closeJobDetailsModal();
+                await loadJobs();
+
+            } catch (error) {
+                console.error('Error accepting proposal:', error);
+                alert('Error accepting proposal. Please try again.');
+            }
+        }
+
+        // Submit proposal modal
+        async function submitProposal(jobId) {
+            selectedJobId = jobId;
+            
+            // Get job details to pre-fill amount
+            const jobDoc = await getDoc(doc(db, "jobPosts", jobId));
+            const job = jobDoc.data();
+            
+            document.getElementById('proposalAmount').value = job.budget;
+            document.getElementById('proposalModal').style.display = 'flex';
+        }
+
+        // Message freelancer
+        function messageFreelancer(freelancerId, jobTitle) {
+            window.location.href = `messages.html?chat=${[currentUser.uid, freelancerId].sort().join('_')}`;
+        }
+
+        // View freelancer profile
+        function viewFreelancerProfile(freelancerId) {
+            // Implement profile view
+            alert('Profile view feature coming soon!');
+        }
+
+        // Modal functions
+        function openCreateJobModal() {
+            document.getElementById('createJobModal').style.display = 'flex';
+        }
+
+        function closeCreateJobModal() {
+            document.getElementById('createJobModal').style.display = 'none';
+        }
+
+        function closeProposalModal() {
+            document.getElementById('proposalModal').style.display = 'none';
+        }
+
+        function closeJobDetailsModal() {
+            document.getElementById('jobDetailsModal').style.display = 'none';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            // You can implement a toast notification system here
+            alert(message);
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const modals = ['createJobModal', 'jobDetailsModal', 'proposalModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (e.target === modal) {
+                    if (modalId === 'createJobModal') closeCreateJobModal();
+                    if (modalId === 'jobDetailsModal') closeJobDetailsModal();
+                    if (modalId === 'proposalModal') closeProposalModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
