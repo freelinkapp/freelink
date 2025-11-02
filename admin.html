@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Feelink</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .status-banned {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><i class="fas fa-handshake"></i> Feelink</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="admin.html" class="active"><i class="fas fa-cog"></i> Admin</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="gigs.html"><i class="fas fa-briefcase"></i> My Gigs</a></li>
+                <li><a href="jobs.html"><i class="fas fa-tasks"></i> Job Posts</a></li>
+                <li><a href="browse.html"><i class="fas fa-search"></i> Browse</a></li>
+                <li><a href="messages.html"><i class="fas fa-comments"></i> Messages</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <div class="user-info">
+                    <span>Platform Management & Analytics</span>
+                </div>
+            </div>
+
+            <!-- Admin Stats -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-value" id="totalGigs">0</div>
+                    <div class="stat-label">Active Gigs</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-value" id="totalOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-value" id="totalRevenue">$0</div>
+                    <div class="stat-label">Platform Revenue</div>
+                </div>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="tab active" onclick="switchTab('users')">Users</button>
+                <button class="tab" onclick="switchTab('gigs')">Gigs</button>
+                <button class="tab" onclick="switchTab('orders')">Orders</button>
+                <button class="tab" onclick="switchTab('reports')">Reports</button>
+                <button class="tab" onclick="switchTab('settings')">Settings</button>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-content active" id="usersTab">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>User Management</h3>
+                        <div class="search-bar">
+                            <input type="text" id="userSearch" class="search-input" placeholder="Search users...">
+                            <button class="btn btn-primary" onclick="searchUsers()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Join Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Loading users...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="usersPagination">
+                        <!-- Pagination will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gigs Tab -->
+            <div class="tab-content" id="gigsTab">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>Gig Management</h3>
+                        <div class="search-bar">
+                            <input type="text" id="gigSearch" class="search-input" placeholder="Search gigs...">
+                            <button class="btn btn-primary" onclick="searchGigs()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Gig Title</th>
+                                    <th>Freelancer</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gigsTable">
+                                <tr>
+                                    <td colspan="7" class="empty-state">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Loading gigs...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="gigsPagination">
+                        <!-- Pagination will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-content" id="ordersTab">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>Order Management</h3>
+                        <div class="search-bar">
+                            <input type="text" id="orderSearch" class="search-input" placeholder="Search orders...">
+                            <button class="btn btn-primary" onclick="searchOrders()">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Gig/Job</th>
+                                    <th>Client</th>
+                                    <th>Freelancer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable">
+                                <tr>
+                                    <td colspan="8" class="empty-state">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Loading orders...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="ordersPagination">
+                        <!-- Pagination will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-content" id="reportsTab">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>Platform Reports</h3>
+                        <div style="display: flex; gap: 1rem;">
+                            <select id="reportPeriod" class="form-control" style="width: auto;" onchange="generateReports()">
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 90 Days</option>
+                                <option value="365">Last Year</option>
+                            </select>
+                            <button class="btn btn-success" onclick="exportReports()">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Count</th>
+                                    <th>Revenue</th>
+                                    <th>Growth</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTable">
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Generating reports...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-content" id="settingsTab">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3>Platform Settings</h3>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <form id="platformSettingsForm">
+                            <div class="form-group">
+                                <label for="commissionRate">Commission Rate (%)</label>
+                                <input type="number" id="commissionRate" class="form-control" min="1" max="30" step="0.5" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="platformName">Platform Name</label>
+                                <input type="text" id="platformName" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="supportEmail">Support Email</label>
+                                <input type="email" id="supportEmail" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="minWithdrawal">Minimum Withdrawal ($)</label>
+                                <input type="number" id="minWithdrawal" class="form-control" min="10" step="10" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="currency">Currency</label>
+                                <select id="currency" class="form-control" required>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Actions Modal -->
+    <div class="modal" id="userActionsModal">
+        <div class="modal-content">
+            <h2 id="userActionsTitle">User Actions</h2>
+            <div id="userActionsContent">
+                <!-- User actions content will be loaded here -->
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end;">
+                <button class="btn btn-warning" onclick="closeUserActionsModal()">Cancel</button>
+                <button class="btn btn-primary" id="userActionsBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3k5f8G-Oim1ObJMTEVksebGTXZWI9ANM",
+            authDomain: "freelink-1321c.firebaseapp.com",
+            projectId: "freelink-1321c",
+            storageBucket: "freelink-1321c.firebasestorage.app",
+            messagingSenderId: "940850990523",
+            appId: "1:940850990523:web:6ba54bcf5b759bb374089e"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // Check authentication and admin status
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Check if user is admin
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            const userData = userDoc.data();
+            
+            if (!userData.isAdmin) {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            currentUser = user;
+            await loadAdminStats();
+            await loadUsers();
+            await loadPlatformSettings();
+        });
+
+        // Load admin statistics
+        async function loadAdminStats() {
+            try {
+                // Get total users
+                const usersSnapshot = await getDocs(collection(db, "users"));
+                document.getElementById('totalUsers').textContent = usersSnapshot.size;
+
+                // Get active gigs
+                const gigsSnapshot = await getDocs(query(collection(db, "gigs"), where("status", "==", "active")));
+                document.getElementById('totalGigs').textContent = gigsSnapshot.size;
+
+                // Get total orders
+                const ordersSnapshot = await getDocs(collection(db, "orders"));
+                document.getElementById('totalOrders').textContent = ordersSnapshot.size;
+
+                // Calculate platform revenue
+                let totalRevenue = 0;
+                ordersSnapshot.forEach(doc => {
+                    const order = doc.data();
+                    if (order.platformFee) {
+                        totalRevenue += order.platformFee;
+                    }
+                });
+                document.getElementById('totalRevenue').textContent = `$${totalRevenue}`;
+
+            } catch (error) {
+                console.error('Error loading admin stats:', error);
+            }
+        }
+
+        // Load users for management
+        async function loadUsers() {
+            try {
+                const usersSnapshot = await getDocs(query(collection(db, "users"), orderBy("joinDate", "desc"), limit(50)));
+                const usersTable = document.getElementById('usersTable');
+                
+                if (usersSnapshot.empty) {
+                    usersTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <p>No users found</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                usersTable.innerHTML = '';
+                usersSnapshot.forEach(doc => {
+                    const user = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                    ${user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 500;">${user.fullName || 'Unknown'}</div>
+                                    <div style="font-size: 0.8rem; color: var(--secondary);">ID: ${user.uid.substring(0, 8)}...</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${user.email}</td>
+                        <td>
+                            <span class="status-badge ${getRoleBadgeClass(user.role)}">
+                                ${user.role || 'unknown'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${getStatusBadgeClass(user.isActive)}">
+                                ${user.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td>${user.joinDate?.toDate().toLocaleDateString()}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary" onclick="viewUserDetails('${doc.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${!user.isAdmin ? `
+                                    <button class="btn ${user.isActive ? 'btn-warning' : 'btn-success'}" onclick="toggleUserStatus('${doc.id}', ${user.isActive})">
+                                        <i class="fas fa-${user.isActive ? 'pause' : 'play'}"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    `;
+                    
+                    usersTable.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Load gigs for management
+        async function loadGigs() {
+            try {
+                const gigsSnapshot = await getDocs(query(collection(db, "gigs"), orderBy("createdAt", "desc"), limit(50)));
+                const gigsTable = document.getElementById('gigsTable');
+                
+                if (gigsSnapshot.empty) {
+                    gigsTable.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="fas fa-briefcase"></i>
+                                <p>No gigs found</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                gigsTable.innerHTML = '';
+                gigsSnapshot.forEach(doc => {
+                    const gig = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div style="font-weight: 500;">${gig.title}</div>
+                            <div style="font-size: 0.8rem; color: var(--secondary);">${gig.description.substring(0, 50)}...</div>
+                        </td>
+                        <td>${gig.freelancerName}</td>
+                        <td>${gig.category}</td>
+                        <td>$${gig.price}</td>
+                        <td>
+                            <span class="status-badge ${getGigStatusBadgeClass(gig.status)}">
+                                ${gig.status}
+                            </span>
+                        </td>
+                        <td>${gig.createdAt?.toDate().toLocaleDateString()}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary" onclick="viewGigDetails('${doc.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn ${gig.status === 'active' ? 'btn-warning' : 'btn-success'}" onclick="toggleGigStatus('${doc.id}', '${gig.status}')">
+                                    <i class="fas fa-${gig.status === 'active' ? 'pause' : 'play'}"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    gigsTable.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Error loading gigs:', error);
+            }
+        }
+
+        // Load orders for management
+        async function loadOrders() {
+            try {
+                const ordersSnapshot = await getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(50)));
+                const ordersTable = document.getElementById('ordersTable');
+                
+                if (ordersSnapshot.empty) {
+                    ordersTable.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>No orders found</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                ordersTable.innerHTML = '';
+                ordersSnapshot.forEach(doc => {
+                    const order = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div style="font-weight: 500;">${order.orderId}</div>
+                            <div style="font-size: 0.8rem; color: var(--secondary);">${doc.id.substring(0, 8)}...</div>
+                        </td>
+                        <td>${order.gigTitle}</td>
+                        <td>${order.clientName}</td>
+                        <td>${order.freelancerName}</td>
+                        <td>$${order.price}</td>
+                        <td>
+                            <span class="status-badge ${getOrderStatusBadgeClass(order.status)}">
+                                ${order.status}
+                            </span>
+                        </td>
+                        <td>${order.createdAt?.toDate().toLocaleDateString()}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary" onclick="viewOrderDetails('${doc.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    ordersTable.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        // Load platform settings
+        async function loadPlatformSettings() {
+            try {
+                const settingsDoc = await getDoc(doc(db, "platform", "settings"));
+                if (settingsDoc.exists()) {
+                    const settings = settingsDoc.data();
+                    document.getElementById('commissionRate').value = settings.commissionRate || 15;
+                    document.getElementById('platformName').value = settings.platformName || 'Feelink';
+                    document.getElementById('supportEmail').value = settings.supportEmail || 'support@feelink.com';
+                    document.getElementById('minWithdrawal').value = settings.minWithdrawal || 50;
+                    document.getElementById('currency').value = settings.currency || 'USD';
+                }
+            } catch (error) {
+                console.error('Error loading platform settings:', error);
+            }
+        }
+
+        // Save platform settings
+        document.getElementById('platformSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await updateDoc(doc(db, "platform", "settings"), {
+                    commissionRate: parseInt(document.getElementById('commissionRate').value),
+                    platformName: document.getElementById('platformName').value,
+                    supportEmail: document.getElementById('supportEmail').value,
+                    minWithdrawal: parseInt(document.getElementById('minWithdrawal').value),
+                    currency: document.getElementById('currency').value,
+                    updatedAt: new Date()
+                });
+
+                alert('Platform settings updated successfully!');
+            } catch (error) {
+                console.error('Error updating platform settings:', error);
+                alert('Error updating settings. Please try again.');
+            }
+        });
+
+        // Helper functions for badge classes
+        function getRoleBadgeClass(role) {
+            const classes = {
+                'freelancer': 'status-active',
+                'client': 'status-active',
+                'both': 'status-active',
+                'admin': 'status-banned'
+            };
+            return classes[role] || 'status-inactive';
+        }
+
+        function getStatusBadgeClass(isActive) {
+            return isActive ? 'status-active' : 'status-inactive';
+        }
+
+        function getGigStatusBadgeClass(status) {
+            const classes = {
+                'active': 'status-active',
+                'paused': 'status-inactive',
+                'deleted': 'status-banned'
+            };
+            return classes[status] || 'status-inactive';
+        }
+
+        function getOrderStatusBadgeClass(status) {
+            const classes = {
+                'completed': 'status-active',
+                'in-progress': 'status-active',
+                'pending': 'status-inactive',
+                'cancelled': 'status-banned'
+            };
+            return classes[status] || 'status-inactive';
+        }
+
+        // User management functions
+        async function toggleUserStatus(userId, currentStatus) {
+            try {
+                await updateDoc(doc(db, "users", userId), {
+                    isActive: !currentStatus,
+                    updatedAt: new Date()
+                });
+
+                alert(`User ${!currentStatus ? 'activated' : 'deactivated'} successfully!`);
+                await loadUsers();
+            } catch (error) {
+                console.error('Error toggling user status:', error);
+                alert('Error updating user status. Please try again.');
+            }
+        }
+
+        async function toggleGigStatus(gigId, currentStatus) {
+            try {
+                const newStatus = currentStatus === 'active' ? 'paused' : 'active';
+                await updateDoc(doc(db, "gigs", gigId), {
+                    status: newStatus,
+                    updatedAt: new Date()
+                });
+
+                alert(`Gig ${newStatus === 'active' ? 'activated' : 'paused'} successfully!`);
+                await loadGigs();
+            } catch (error) {
+                console.error('Error toggling gig status:', error);
+                alert('Error updating gig status. Please try again.');
+            }
+        }
+
+        // View details functions
+        async function viewUserDetails(userId) {
+            const userDoc = await getDoc(doc(db, "users", userId));
+            const user = userDoc.data();
+            
+            document.getElementById('userActionsTitle').textContent = `User: ${user.fullName}`;
+            document.getElementById('userActionsContent').innerHTML = `
+                <div style="line-height: 1.6;">
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Role:</strong> ${user.role}</p>
+                    <p><strong>Status:</strong> ${user.isActive ? 'Active' : 'Inactive'}</p>
+                    <p><strong>Join Date:</strong> ${user.joinDate?.toDate().toLocaleDateString()}</p>
+                    <p><strong>Last Login:</strong> ${user.lastLogin?.toDate().toLocaleDateString()}</p>
+                    ${user.phone ? `<p><strong>Phone:</strong> ${user.phone}</p>` : ''}
+                    ${user.country ? `<p><strong>Country:</strong> ${user.country}</p>` : ''}
+                    ${user.bio ? `<p><strong>Bio:</strong> ${user.bio}</p>` : ''}
+                </div>
+            `;
+            
+            document.getElementById('userActionsBtn').style.display = 'none';
+            document.getElementById('userActionsModal').style.display = 'flex';
+        }
+
+        async function viewGigDetails(gigId) {
+            const gigDoc = await getDoc(doc(db, "gigs", gigId));
+            const gig = gigDoc.data();
+            
+            document.getElementById('userActionsTitle').textContent = `Gig: ${gig.title}`;
+            document.getElementById('userActionsContent').innerHTML = `
+                <div style="line-height: 1.6;">
+                    <p><strong>Freelancer:</strong> ${gig.freelancerName}</p>
+                    <p><strong>Category:</strong> ${gig.category}</p>
+                    <p><strong>Price:</strong> $${gig.price}</p>
+                    <p><strong>Status:</strong> ${gig.status}</p>
+                    <p><strong>Delivery Time:</strong> ${gig.deliveryTime} days</p>
+                    <p><strong>Created:</strong> ${gig.createdAt?.toDate().toLocaleDateString()}</p>
+                    <p><strong>Description:</strong></p>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius); margin-top: 0.5rem;">
+                        ${gig.description}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('userActionsBtn').style.display = 'none';
+            document.getElementById('userActionsModal').style.display = 'flex';
+        }
+
+        async function viewOrderDetails(orderId) {
+            const orderDoc = await getDoc(doc(db, "orders", orderId));
+            const order = orderDoc.data();
+            
+            document.getElementById('userActionsTitle').textContent = `Order: ${order.orderId}`;
+            document.getElementById('userActionsContent').innerHTML = `
+                <div style="line-height: 1.6;">
+                    <p><strong>Gig/Job:</strong> ${order.gigTitle}</p>
+                    <p><strong>Client:</strong> ${order.clientName}</p>
+                    <p><strong>Freelancer:</strong> ${order.freelancerName}</p>
+                    <p><strong>Amount:</strong> $${order.price}</p>
+                    <p><strong>Platform Fee:</strong> $${order.platformFee}</p>
+                    <p><strong>Freelancer Earnings:</strong> $${order.freelancerEarnings}</p>
+                    <p><strong>Status:</strong> ${order.status}</p>
+                    <p><strong>Payment Status:</strong> ${order.paymentStatus}</p>
+                    <p><strong>Created:</strong> ${order.createdAt?.toDate().toLocaleDateString()}</p>
+                    <p><strong>Delivery Date:</strong> ${order.deliveryDate?.toDate().toLocaleDateString()}</p>
+                </div>
+            `;
+            
+            document.getElementById('userActionsBtn').style.display = 'none';
+            document.getElementById('userActionsModal').style.display = 'flex';
+        }
+
+        // Generate reports
+        async function generateReports() {
+            // Implement report generation logic
+            const reportsTable = document.getElementById('reportsTable');
+            reportsTable.innerHTML = `
+                <tr>
+                    <td>New Users</td>
+                    <td>45</td>
+                    <td>-</td>
+                    <td>+12%</td>
+                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
+                </tr>
+                <tr>
+                    <td>Completed Orders</td>
+                    <td>128</td>
+                    <td>$2,560</td>
+                    <td>+8%</td>
+                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
+                </tr>
+                <tr>
+                    <td>Platform Revenue</td>
+                    <td>-</td>
+                    <td>$384</td>
+                    <td>+15%</td>
+                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
+                </tr>
+                <tr>
+                    <td>Active Gigs</td>
+                    <td>89</td>
+                    <td>-</td>
+                    <td>+5%</td>
+                    <td><i class="fas fa-arrow-up" style="color: var(--success);"></i></td>
+                </tr>
+            `;
+        }
+
+        // Export reports
+        function exportReports() {
+            alert('Export feature would generate a CSV file with all report data');
+        }
+
+        // Search functions
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            alert(`Search users for: ${searchTerm}`);
+            // Implement search logic
+        }
+
+        function searchGigs() {
+            const searchTerm = document.getElementById('gigSearch').value.toLowerCase();
+            alert(`Search gigs for: ${searchTerm}`);
+            // Implement search logic
+        }
+
+        function searchOrders() {
+            const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+            alert(`Search orders for: ${searchTerm}`);
+            // Implement search logic
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+
+            // Load data for the tab
+            if (tabName === 'gigs') loadGigs();
+            if (tabName === 'orders') loadOrders();
+            if (tabName === 'reports') generateReports();
+        }
+
+        // Close modal
+        function closeUserActionsModal() {
+            document.getElementById('userActionsModal').style.display = 'none';
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('userActionsModal');
+            if (e.target === modal) {
+                closeUserActionsModal();
+            }
+        });
+    </script>
+</body>
+</html>
